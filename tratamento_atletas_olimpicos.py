@@ -48,7 +48,7 @@ if not INPUT_CSV.exists():
     )
 
 # %% [markdown]
-# ## 2. Critério 1 — ingestão e listagem do dataframe `atletas` (2,0 pontos)
+# ## 2. Ingestão e conhecimento dos dados
 #
 # O arquivo `athlete_events.csv` é carregado no dataframe `atletas`. Em seguida,
 # são exibidos uma amostra, as dimensões, os tipos e o resumo estatístico das
@@ -103,10 +103,9 @@ else:
     plt.close(fig)
 
 # %% [markdown]
-# ## 4. Critério 2 — duplicatas: verificar, remover e verificar (1,5 ponto)
+# ## 4. Remoção e verificação de duplicatas
 #
-# As linhas duplicadas são removidas e o resultado é explicitamente verificado,
-# como determina a rubrica.
+# As linhas duplicadas são removidas e o resultado é explicitamente verificado.
 
 # %%
 atletas = atletas.drop_duplicates().reset_index(drop=True)
@@ -122,7 +121,7 @@ print(f"Duplicatas após a limpeza: {duplicatas_depois}")
 print(f"Linhas restantes: {len(atletas):,}")
 
 # %% [markdown]
-# ## 5. Critério 3 — idade: verificar, preencher com a média e verificar (2,0 pontos)
+# ## 5. Tratamento e verificação da idade
 #
 # A atividade determina que idades ausentes sejam substituídas pela média das
 # idades de todos os registros válidos. A média é calculada depois da remoção
@@ -151,11 +150,11 @@ print(f"Média usada no preenchimento: {media_idade:.4f} anos")
 print(f"Idades ausentes após o preenchimento: {idades_ausentes_depois}")
 
 # %% [markdown]
-# ## 6. Critério 4 — altura: verificar, remover e verificar (1,5 ponto)
+# ## 6. Tratamento e verificação da altura
 #
-# Seguindo o critério de excelência da rubrica, linhas sem altura são removidas.
-# Não se imputa altura porque ela é central para as análises propostas e uma
-# estimativa acrescentaria valores artificiais a uma parcela grande da base.
+# Linhas sem altura são removidas. Não se imputa altura porque ela é central
+# para as análises propostas e uma estimativa acrescentaria valores artificiais
+# a uma parcela grande da base.
 
 # %%
 mascara_alturas_ausentes = atletas["Height"].isna()
@@ -246,11 +245,9 @@ print("\nResumo estatístico final:")
 print(atletas[variaveis_interesse].describe().round(2).to_string())
 
 # %% [markdown]
-# ## 9. Checklist da rubrica, exportação e balanço
+# ## 9. Exportação e balanço do tratamento
 #
-# O checklist torna explícita a evidência produzida para cada condição de
-# excelência da rubrica, que totaliza 7 pontos. A base validada é salva em CSV.
-# A leitura do arquivo exportado confirma que
+# A base validada é salva em CSV. A leitura do arquivo exportado confirma que
 # o número de linhas, as colunas e a completude das variáveis de interesse foram
 # preservados no disco.
 
@@ -262,39 +259,6 @@ atletas_exportados = pd.read_csv(OUTPUT_CSV)
 assert atletas_exportados.shape == atletas.shape, "O CSV exportado possui dimensões incorretas."
 assert list(atletas_exportados.columns) == list(atletas.columns), "As colunas exportadas mudaram."
 assert not atletas_exportados[variaveis_interesse].isna().any().any()
-
-checklist_rubrica = pd.DataFrame(
-    [
-        {
-            "Critério": "1. Carregar e listar o dataframe atletas",
-            "Evidência": f"{linhas_iniciais:,} linhas carregadas; amostra e info exibidas",
-            "Pontos possíveis": 2.0,
-            "Resultado": "Condição Excelente comprovada",
-        },
-        {
-            "Critério": "2. Verificar, remover e reverificar duplicatas",
-            "Evidência": f"{duplicatas_antes:,} antes; {duplicatas_depois} depois",
-            "Pontos possíveis": 1.5,
-            "Resultado": "Condição Excelente comprovada",
-        },
-        {
-            "Critério": "3. Preencher idades ausentes com a média",
-            "Evidência": (
-                f"{idades_ausentes_antes:,} antes; média {media_idade:.4f}; "
-                f"{idades_ausentes_depois} depois"
-            ),
-            "Pontos possíveis": 2.0,
-            "Resultado": "Condição Excelente comprovada",
-        },
-        {
-            "Critério": "4. Verificar e remover alturas ausentes",
-            "Evidência": f"{alturas_ausentes_antes:,} antes; {alturas_ausentes_depois} depois",
-            "Pontos possíveis": 1.5,
-            "Resultado": "Condição Excelente comprovada",
-        },
-    ]
-)
-assert checklist_rubrica["Pontos possíveis"].sum() == 7.0
 
 resumo_tratamento = pd.Series(
     {
@@ -310,6 +274,4 @@ resumo_tratamento = pd.Series(
 
 print("Balanço final do tratamento:")
 print(resumo_tratamento.to_string())
-print("\nChecklist dos critérios de avaliação:")
-display(checklist_rubrica)
 print(f"\nArquivo validado e salvo em: {OUTPUT_CSV}")

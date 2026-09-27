@@ -19,13 +19,6 @@ python -m pip install -r requirements.txt
 python tratamento_atletas_olimpicos.py
 ```
 
-O script valida cada transformação com asserções descritas na atividade e
-grava o conjunto tratado em `data/athlete_events_clean.csv`.
-
-## Critérios atendidos
-
-O fluxo apresenta evidências antes e depois de cada tratamento exigido pela
-rubrica: carrega e lista o dataframe `atletas`, identifica/remove/reverifica
-duplicatas, identifica/preenche/reverifica idades ausentes com a média e
-identifica/remove/reverifica alturas ausentes. O peso é tratado adicionalmente
-por mediana de sexo e modalidade, com contingência por sexo e mediana global.
+O script valida cada transformação com asserções e grava o conjunto tratado em
+`data/athlete_events_clean.csv`. O peso é preenchido pela mediana de sexo e
+modalidade, com contingência por sexo e mediana global.
