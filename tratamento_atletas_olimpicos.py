@@ -3,17 +3,14 @@
 #
 # **Conjunto de dados:** *120 years of Olympic history: athletes and results*
 #
-# Este trabalho executa, documenta e valida todas as etapas solicitadas na
-# atividade: ingestão, inspeção, remoção de duplicatas, tratamento de idade,
-# altura e peso, validação final e exportação. O dataframe principal recebe o
-# nome `atletas`, conforme exigido.
+# O conjunto é submetido a ingestão, inspeção, remoção de duplicatas,
+# tratamento de idade, altura e peso, validação final e exportação. O dataframe
+# utilizado na análise é denominado `atletas`.
 
 # %% [markdown]
-# ## 1. Configuração e caminhos
+# ## 1. Preparação
 #
-# O bloco funciona tanto como arquivo Python quanto como Notebook executado a
-# partir da raiz do projeto. A semente visual e o estilo são fixos para tornar
-# o resultado reproduzível.
+# Importação das bibliotecas e definição dos dados de entrada e saída.
 
 # %%
 from pathlib import Path
@@ -22,18 +19,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from IPython.display import display
 
-try:
-    ROOT = Path(__file__).resolve().parent
-except NameError:
-    ROOT = Path.cwd()
-
-try:
-    get_ipython()
-    EXECUTANDO_NOTEBOOK = True
-except NameError:
-    EXECUTANDO_NOTEBOOK = False
-
-DATA_DIR = ROOT / "data"
+DATA_DIR = Path("data")
 INPUT_CSV = DATA_DIR / "athlete_events.csv"
 OUTPUT_CSV = DATA_DIR / "athlete_events_clean.csv"
 
@@ -96,11 +82,8 @@ ax.set_xlabel("Variável")
 ax.set_ylabel("Quantidade de linhas")
 ax.tick_params(axis="x", rotation=0)
 fig.tight_layout()
-fig.savefig(DATA_DIR / "missing_values_before.png", dpi=150, bbox_inches="tight")
-if EXECUTANDO_NOTEBOOK:
-    plt.show()
-else:
-    plt.close(fig)
+display(fig)
+plt.close(fig)
 
 # %% [markdown]
 # ## 4. Remoção e verificação de duplicatas
@@ -123,9 +106,9 @@ print(f"Linhas restantes: {len(atletas):,}")
 # %% [markdown]
 # ## 5. Tratamento e verificação da idade
 #
-# A atividade determina que idades ausentes sejam substituídas pela média das
-# idades de todos os registros válidos. A média é calculada depois da remoção
-# das duplicatas, evitando que registros repetidos influenciem o valor.
+# Idades ausentes são substituídas pela média das idades de todos os registros
+# válidos. A média é calculada depois da remoção das duplicatas, evitando que
+# registros repetidos influenciem o valor.
 
 # %%
 mascara_idades_ausentes = atletas["Age"].isna()
@@ -153,8 +136,8 @@ print(f"Idades ausentes após o preenchimento: {idades_ausentes_depois}")
 # ## 6. Tratamento e verificação da altura
 #
 # Linhas sem altura são removidas. Não se imputa altura porque ela é central
-# para as análises propostas e uma estimativa acrescentaria valores artificiais
-# a uma parcela grande da base.
+# para a análise e uma estimativa acrescentaria valores artificiais a uma
+# parcela grande da base.
 
 # %%
 mascara_alturas_ausentes = atletas["Height"].isna()
@@ -223,7 +206,7 @@ print(f"Pesos ausentes após a imputação: {pesos_ausentes_depois}")
 # olímpicas possuem perfis corporais muito diferentes.
 #
 # Valores ausentes em `Medal` são mantidos, pois significam que o atleta não
-# ganhou medalha, e não uma falha de coleta relevante para esta tarefa.
+# ganhou medalha e não representam uma falha de coleta.
 
 # %%
 variaveis_interesse = ["Age", "Height", "Weight"]
